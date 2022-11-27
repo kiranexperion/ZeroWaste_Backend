@@ -19,4 +19,5 @@ from django.urls import path,include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('zerowaste/', include('HouseOwnerApp.urls')),
+    path('zerowaste/', include('CorporationApp.urls')),
 ]

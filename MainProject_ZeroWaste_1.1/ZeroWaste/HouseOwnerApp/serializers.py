@@ -3,6 +3,8 @@ from rest_framework import serializers
 
 from .models import houseowner
 from .models import wards
+from .models import slotbooking
+
 class houseOwnerSerializer(serializers.ModelSerializer):
     class Meta:
         model = houseowner
@@ -25,3 +27,7 @@ class wardsSerializer(serializers.ModelSerializer):
         model = wards
         fields = ('__all__')
 
+class slotBookingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = slotbooking
+        fields = ('__all__')

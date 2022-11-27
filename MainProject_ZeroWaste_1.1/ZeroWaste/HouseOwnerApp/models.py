@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import CorporationApp.models as co_model
 
 # Create your models here.
 
@@ -23,3 +24,11 @@ class houseowner(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+class slotbooking(models.Model):
+
+    waste_id = models.ForeignKey(co_model.wastes,on_delete=models.CASCADE)
+    houseowner_id = models.ForeignKey(houseowner,on_delete=models.CASCADE)
+    collection_date = models.DateField(null=False)
+    booking_date = models.DateField(null=False)
+

@@ -8,6 +8,7 @@ from rest_framework.exceptions import AuthenticationFailed
 
 from .serializers import houseOwnerSerializer
 from .serializers import wardsSerializer
+from .serializers import slotBookingSerializer
 from .models import houseowner
 from .models import wards
 
@@ -62,7 +63,6 @@ def postLogoutView(request):
 @api_view(['GET'])
 def getUserView(request):
     token = request.COOKIES.get('jwt')
-    print("token:",token)
     if not token:
         raise AuthenticationFailed('Unauthenticated!')
     try:
@@ -73,3 +73,27 @@ def getUserView(request):
     user = houseowner.objects.filter(id = payload['id'])
     serializer = houseOwnerSerializer(user,many=True)
     return Response(serializer.data)
+
+@api_view(['POST'])
+def postSlotBooking(request):
+    token = request.COOKIES.get('jwt')
+    if not token:
+        raise AuthenticationFailed('Unauthenticated!')
+    try:
+        payload = jwt.decode(token,'secret',algorithms=['HS256'])
+    except jwt.ExpiredSignatureError :
+        raise AuthenticationFailed('Unauthenticated!')
+    
+    ho_id = payload['id']
+    waste_list = request.data['waste_list']
+    collection_date = request.data['collection_date']
+    booking_date = request.data['booking_date']
+
+    for waste in waste_list:
+        data ={'houseowner_id':ho_id,'waste_id':waste,'collection_date':collection_date,'booking_date':booking_date}
+        serializer = slotBookingSerializer(data = data)
+        if(serializer.is_valid()):
+            serializer.save()
+            return Response({'status':1,'message':'Successfully Saved','data':serializer.data})
+        else:
+            return Response({'status':0,'message':'OOPS Some error occured','data':serializer.errors})
