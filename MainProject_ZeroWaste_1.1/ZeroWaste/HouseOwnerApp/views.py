@@ -85,15 +85,15 @@ def postSlotBooking(request):
         raise AuthenticationFailed('Unauthenticated!')
     
     ho_id = payload['id']
-    waste_list = request.data['waste_list']
+    waste_id = request.data['waste_id']
     collection_date = request.data['collection_date']
     booking_date = request.data['booking_date']
 
-    for waste in waste_list:
-        data ={'houseowner_id':ho_id,'waste_id':waste,'collection_date':collection_date,'booking_date':booking_date}
-        serializer = slotBookingSerializer(data = data)
-        if(serializer.is_valid()):
-            serializer.save()
-            return Response({'status':1,'message':'Successfully Saved','data':serializer.data})
-        else:
-            return Response({'status':0,'message':'OOPS Some error occured','data':serializer.errors})
+    # for waste in waste_list:
+    data ={'houseowner_id':ho_id,'waste_id':waste_id,'collection_date':collection_date,'booking_date':booking_date}
+    serializer = slotBookingSerializer(data = data)
+    if(serializer.is_valid()):
+        serializer.save()
+        return Response({'status':1,'message':'Successfully Saved','data':serializer.data})
+    else:
+        return Response({'status':0,'message':'OOPS Some error occured','data':serializer.errors})
