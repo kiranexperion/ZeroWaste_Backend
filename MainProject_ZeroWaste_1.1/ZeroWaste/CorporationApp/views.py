@@ -53,29 +53,28 @@ def postBookingReport(request):
         raise AuthenticationFailed('Unauthenticated!')
     
     ward_no = request.data['ward_no']
-    # collection_date = request.data['collection_date']
+    collection_date = request.data['collection_date']
 
     cursor = connection.cursor()
-    cursor.execute("SELECT houseownerapp_houseowner.firstname,houseownerapp_houseowner.lastname,houseownerapp_houseowner.address,houseownerapp_houseowner.phoneno,corporationapp_wastes.waste_type from houseownerapp_houseowner inner join houseownerapp_slotbooking on houseownerapp_houseowner.id = houseownerapp_slotbooking.houseowner_id_id inner join corporationapp_wastes on houseownerapp_slotbooking.waste_id_id = corporationapp_wastes.id inner join houseownerapp_bookingstatus on where houseownerapp_houseowner.wardno_id = %s",[ward_no])
+    cursor.execute("SELECT houseownerapp_houseowner.firstname,houseownerapp_houseowner.lastname,houseownerapp_houseowner.address,houseownerapp_houseowner.phoneno,corporationapp_wastes.waste_type,houseownerapp_bookingstatus.wastecollector_id,houseownerapp_bookingstatus.status from houseownerapp_houseowner inner join houseownerapp_slotbooking on houseownerapp_houseowner.id = houseownerapp_slotbooking.houseowner_id_id inner join corporationapp_wastes on houseownerapp_slotbooking.waste_id_id = corporationapp_wastes.id inner join houseownerapp_bookingstatus on houseownerapp_slotbooking.id = houseownerapp_bookingstatus.slot_id_id where houseownerapp_houseowner.wardno_id = %s and houseownerapp_slotbooking.collection_date = %s",[ward_no,collection_date])
     result = cursor.fetchall()
 
-    # final_list=[]
+    final_list=[]
 
-    # for item in result:
+    for item in result:
 
-    #     singleitem={}
+        singleitem={}
+        singleitem["First Name"]=item[0]
+        singleitem["Last Name"]=item[1]
+        singleitem["Address"]=item[2]
+        singleitem["Phone no"]=item[3]
+        singleitem["Waste type"]=item[4]
+        singleitem["Collector Id"]=item[5]
+        singleitem["Booking status"]=item[6]
 
-    #     singleitem["orderId"]=item[0]
+        final_list.append(singleitem)
 
-    #     singleitem["Amount"]=item[1]
-
-    #     singleitem["ProductId"]=item[2]
-
-    #     singleitem["ProductName"]=item[3]
-
-    #     final_list.append(singleitem)
-
-    return Response(result)
+    return Response(final_list)
 
     # users = ho_models.houseowner.objects.filter(wardno = ward_no)
     # # ho_serializer = ho_serializers.houseOwnerSerializer(users,many = True)
