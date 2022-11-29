@@ -4,6 +4,7 @@ from rest_framework import serializers
 from .models import houseowner
 from .models import wards
 from .models import slotbooking
+from .models import bookingstatus
 
 class houseOwnerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,4 +31,9 @@ class wardsSerializer(serializers.ModelSerializer):
 class slotBookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = slotbooking
+        fields = ('__all__')
+    
+class bookingStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = bookingstatus
         fields = ('__all__')

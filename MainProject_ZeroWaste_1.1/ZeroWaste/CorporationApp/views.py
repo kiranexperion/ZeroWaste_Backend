@@ -24,8 +24,6 @@ def postCorporationlogin(request):
     data_username = request.data['username']
     data_password = request.data['password']
 
-    # user = houseowner.objects.filter(email = data_email).first()
-
     if data_username!="admin":
         raise AuthenticationFailed('User not found')
     if data_password!="admin":
@@ -39,7 +37,14 @@ def postCorporationlogin(request):
     token = jwt.encode(payload, 'secret',algorithm='HS256')
     response =  Response()
     response.set_cookie(key = 'jwt',value=token, httponly=True)
-    response.data = {'jwt': token}
+    response.data = {'jwt': token,'status':1}
+    return response
+
+@api_view(['POST'])
+def postLogoutView(request):
+    response = Response()
+    response.delete_cookie('jwt')
+    response.data = {'message': 'Successfully logged out','status':1}
     return response
 
 @api_view(['POST'])
@@ -75,12 +80,3 @@ def postBookingReport(request):
         final_list.append(singleitem)
 
     return Response(final_list)
-
-    # users = ho_models.houseowner.objects.filter(wardno = ward_no)
-    # # ho_serializer = ho_serializers.houseOwnerSerializer(users,many = True)
-    # for ho in users:
-    #     slots = ho_models.slotbooking.objects.filter(houseowner_id = ho.id)
-    #     # slots_serializer = ho_serializers.slotBookingSerializer(slots,many = True)
-    #     # data = slots_serializer.data[:]
-    
-    # return Response(slots_serializer.data)

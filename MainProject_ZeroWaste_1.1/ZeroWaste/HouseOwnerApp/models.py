@@ -35,7 +35,7 @@ class slotbooking(models.Model):
 class bookingstatus(models.Model):
 
     slot_id = models.ForeignKey(slotbooking, on_delete=models.CASCADE)
-    wastecollector_id = models.IntegerField(null=False)
-    status = models.CharField(max_length=200,null=False)
+    wastecollector_id = models.IntegerField(default= 100)
+    status = models.CharField(max_length=200, default="waiting for collection")
     collected_date = models.DateField(null=False)
 
