@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 import jwt, datetime
+from django.db import connection
 
 from .serializers import wasteSerializer
 from .models import wastes
@@ -54,10 +55,33 @@ def postBookingReport(request):
     ward_no = request.data['ward_no']
     # collection_date = request.data['collection_date']
 
-    users = ho_models.houseowner.objects.filter(wardno = ward_no)
-    # ho_serializer = ho_serializers.houseOwnerSerializer(users,many = True)
-    for ho in users:
-        slots = ho_models.slotbooking.objects.filter(houseowner_id = ho.id)
-        slots_serializer = ho_serializers.slotBookingSerializer(slots,many = True)
-        # data = slots_serializer.data[:]
-    return Response(slots_serializer.data)
+    cursor = connection.cursor()
+    cursor.execute("SELECT houseownerapp_houseowner.firstname,houseownerapp_houseowner.lastname,houseownerapp_houseowner.address,houseownerapp_houseowner.phoneno,corporationapp_wastes.waste_type from houseownerapp_houseowner inner join houseownerapp_slotbooking on houseownerapp_houseowner.id = houseownerapp_slotbooking.houseowner_id_id inner join corporationapp_wastes on houseownerapp_slotbooking.waste_id_id = corporationapp_wastes.id inner join houseownerapp_bookingstatus on where houseownerapp_houseowner.wardno_id = %s",[ward_no])
+    result = cursor.fetchall()
+
+    # final_list=[]
+
+    # for item in result:
+
+    #     singleitem={}
+
+    #     singleitem["orderId"]=item[0]
+
+    #     singleitem["Amount"]=item[1]
+
+    #     singleitem["ProductId"]=item[2]
+
+    #     singleitem["ProductName"]=item[3]
+
+    #     final_list.append(singleitem)
+
+    return Response(result)
+
+    # users = ho_models.houseowner.objects.filter(wardno = ward_no)
+    # # ho_serializer = ho_serializers.houseOwnerSerializer(users,many = True)
+    # for ho in users:
+    #     slots = ho_models.slotbooking.objects.filter(houseowner_id = ho.id)
+    #     # slots_serializer = ho_serializers.slotBookingSerializer(slots,many = True)
+    #     # data = slots_serializer.data[:]
+    
+    # return Response(slots_serializer.data)

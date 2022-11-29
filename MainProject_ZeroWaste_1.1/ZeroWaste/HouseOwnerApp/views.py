@@ -60,19 +60,19 @@ def postLogoutView(request):
     response.data = {'message': 'success','status':1}
     return response
 
-@api_view(['GET'])
-def getUserView(request):
-    token = request.COOKIES.get('jwt')
-    if not token:
-        raise AuthenticationFailed('Unauthenticated!')
-    try:
-        payload = jwt.decode(token,'secret',algorithms=['HS256'])
-    except jwt.ExpiredSignatureError :
-        raise AuthenticationFailed('Unauthenticated!')
+# @api_view(['GET'])
+# def getUserView(request):
+#     token = request.COOKIES.get('jwt')
+#     if not token:
+#         raise AuthenticationFailed('Unauthenticated!')
+#     try:
+#         payload = jwt.decode(token,'secret',algorithms=['HS256'])
+#     except jwt.ExpiredSignatureError :
+#         raise AuthenticationFailed('Unauthenticated!')
 
-    user = houseowner.objects.filter(id = payload['id'])
-    serializer = houseOwnerSerializer(user,many=True)
-    return Response(serializer.data)
+#     user = houseowner.objects.filter(id = payload['id'])
+#     serializer = houseOwnerSerializer(user,many=True)
+#     return Response(serializer.data)
 
 @api_view(['POST'])
 def postSlotBooking(request):
@@ -97,3 +97,5 @@ def postSlotBooking(request):
         return Response({'status':1,'message':'Successfully Saved','data':serializer.data})
     else:
         return Response({'status':0,'message':'OOPS Some error occured','data':serializer.errors})
+
+
